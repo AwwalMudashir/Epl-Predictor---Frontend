@@ -38,7 +38,7 @@ function History() {
     );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 px-4">
+    <div className="max-w-6xl mt-4 pt-6 mx-auto space-y-6 px-4">
       <h2 className="text-3xl font-bold text-[#371d54]">
         Prediction History
       </h2>
