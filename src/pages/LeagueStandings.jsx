@@ -49,7 +49,7 @@ function LeagueStandings() {
   };
 
   return (
-    <div className="max-w-5xl mt-6 pt-4 mx-auto space-y-6 px-4">
+    <div className="max-w-5xl mt-6 pt-6 mx-auto space-y-6 px-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
