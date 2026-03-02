@@ -4,7 +4,8 @@ import { AuthContext } from '../contexts/AuthContext';
 import { HiMenu, HiX } from 'react-icons/hi';
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, token, logout } = useContext(AuthContext);
+  const isLoggedIn = user || token;
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function Navbar() {
       <nav className={navClass}>
         <div className="font-bold text-xl cursor-pointer" onClick={() => navigate('/dashboard')} >EPL Predictor</div>
         <div className="hidden md:flex space-x-4">
-          {user ? (
+          {isLoggedIn ? (
             <>
               {/* <Link to="/dashboard" className="hover:underline">Dashboard</Link>
               <Link to="/predict" className="hover:underline">Predict</Link>
@@ -53,7 +54,7 @@ function Navbar() {
         }`}
       >
         <div className="p-4 flex flex-col space-y-4">
-          {user ? (
+          {isLoggedIn ? (
             <>
               <Link to="/dashboard" className="block" onClick={toggle}>Dashboard</Link>
               <Link to="/predict" className="block" onClick={toggle}>Predict</Link>
