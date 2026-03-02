@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import './App.css';
 import { AuthContext } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import ToastContainer from './components/Toast';
 import Navbar from './components/Navbar';
 
 import Login from './pages/Login';
@@ -20,11 +22,13 @@ function App() {
   const { user, token, logout } = useContext(AuthContext);
 
   return (
-    <div className="min-h-screen bg-gray-light">
-      <Navbar />
-      {/* push content down so fixed navbar doesn't overlap */}
-      <main className="mt-12">
-        <Routes>
+    <NotificationProvider>
+      <div className="min-h-screen bg-gray-light">
+        <Navbar />
+        <ToastContainer />
+        {/* push content down so fixed navbar doesn't overlap */}
+        <main className="mt-12">
+          <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={user || token ? <Dashboard /> : <Navigate to="/login" />} />
@@ -39,6 +43,7 @@ function App() {
         </Routes>
       </main>
     </div>
+    </NotificationProvider>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import API from '../api';
 import { AuthContext } from '../contexts/AuthContext';
+import { NotificationContext } from '../contexts/NotificationContext';
 
 function Predict() {
   const [matches, setMatches] = useState([]);
@@ -9,6 +10,7 @@ function Predict() {
   const [error, setError] = useState(null);
   const [creating, setCreating] = useState(false);
   const { user } = useContext(AuthContext);
+  const { notify } = useContext(NotificationContext);
   const [predictions, setPredictions] = useState({});
 
   useEffect(() => {
@@ -68,7 +70,7 @@ function Predict() {
 
   const submitPrediction = async (matchId) => {
     if (!user || !user.id) {
-      alert('You must be logged in to save predictions');
+      notify('You must be logged in to save predictions', 'error');
       return;
     }
     const entry = predictions[matchId] || {};
@@ -85,7 +87,7 @@ function Predict() {
       if (id) {
         console.debug('updating prediction', id, homeVal, awayVal);
         await API.put(`/predictions/${id}`, payload);
-        alert('Prediction updated');
+        notify('Prediction updated', 'success');
       } else {
         console.debug('creating prediction', matchId, homeVal, awayVal);
         const res = await API.post('/predictions', payload);
@@ -94,13 +96,13 @@ function Predict() {
           ...prev,
           [matchId]: { predictedHomeScore: homeVal, predictedAwayScore: awayVal, id: res.data.predictionId || res.data.id },
         }));
-        alert('Prediction saved');
+        notify('Prediction saved', 'success');
       }
     } catch (err) {
       // log response body if available
       console.debug('submitPrediction error', err.response?.data || err.message || err);
       const msg = err.response?.data?.message || err.response?.data || err.message || 'Error saving prediction';
-      alert(msg);
+      notify(msg, 'error');
     }
   };
 
@@ -154,7 +156,7 @@ function Predict() {
                   setMatches(res.data.matches);
                 } catch (e) {
                   console.debug('create gameweek error', e);
-                  alert('Failed to create gameweek');
+                  notify('Failed to create gameweek', 'error');
                 } finally {
                   setCreating(false);
                 }
