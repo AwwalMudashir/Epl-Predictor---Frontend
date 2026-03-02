@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import API from '../api';
+import { AuthContext } from '../contexts/AuthContext';
 
 function GlobalLeaderboard() {
+  const { user } = useContext(AuthContext);
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const userRowRef = useRef(null);
 
   useEffect(() => {
     async function fetch() {
@@ -26,13 +29,31 @@ function GlobalLeaderboard() {
 
   const allZero = list.every(u => u.totalPoints === 0);
 
+  // determine current user's index
+  const myIndex = user && user.id ? list.findIndex(u => u.userId === user.id) : -1;
+
   return (
     <div className="max-w-4xl mt-10 mx-auto space-y-6 px-4">
       <h2 className="text-3xl pt-6 font-bold text-[#371d54] text-center">
         Global Leaderboard
       </h2>
 
-      <div className="overflow-x-auto">
+      <div className="relative overflow-x-auto">
+        {myIndex >= 0 && (
+          <button
+            onClick={() => {
+              const el = document.getElementById(`row-${myIndex}`);
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('bg-yellow-100');
+                setTimeout(() => el.classList.remove('bg-yellow-100'), 2000);
+              }
+            }}
+            className="fixed right-4 top-1/3 bg-[#371d54] text-white px-3 py-2 rounded shadow-lg hover:bg-[#371d54]/90 z-40"
+          >
+            My position
+          </button>
+        )}
         <table className="w-full bg-white rounded-xl shadow-lg overflow-hidden">
           <thead className="bg-[#371d54] text-white">
             <tr>
@@ -44,6 +65,7 @@ function GlobalLeaderboard() {
           <tbody>
             {list.map((u, idx) => (
               <tr
+                id={`row-${idx}`}
                 key={u.userId}
                 className={`
                   border-b last:border-none

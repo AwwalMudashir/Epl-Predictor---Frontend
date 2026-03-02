@@ -7,11 +7,14 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
     console.debug('Register form submit', { username, email, password });
     try {
       const res = await register({ username, email, password });
@@ -20,6 +23,8 @@ function Register() {
     } catch (err) {
       console.debug('register error', err);
       setError(err.response?.data || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,9 +86,10 @@ function Register() {
 
           <button
             type="submit"
-            className="w-full bg-[#371d54] hover:bg-[#371d54]/90 text-white font-semibold py-2.5 rounded-xl transition-all active:scale-95 shadow-md"
+            disabled={loading}
+            className="w-full bg-[#371d54] hover:bg-[#371d54]/90 text-white font-semibold py-2.5 rounded-xl transition-all active:scale-95 shadow-md disabled:opacity-50"
           >
-            Register
+            {loading ? 'Creating account…' : 'Register'}
           </button>
         </form>
 
