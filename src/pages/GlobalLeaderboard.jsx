@@ -27,8 +27,8 @@ function GlobalLeaderboard() {
   const allZero = list.every(u => u.totalPoints === 0);
 
   return (
-    <div className="max-w-4xl mt-6 mx-auto space-y-6 px-4">
-      <h2 className="text-3xl font-bold text-[#371d54] text-center">
+    <div className="max-w-4xl mt-10 mx-auto space-y-6 px-4">
+      <h2 className="text-3xl pt-4 font-bold text-[#371d54] text-center">
         Global Leaderboard
       </h2>
 
