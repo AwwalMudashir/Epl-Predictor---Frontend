@@ -68,7 +68,7 @@ function Leagues() {
     );
 
   return (
-    <div className="max-w-5xl mt-4 mx-auto space-y-8 px-4">
+    <div className="max-w-5xl mt-6 mx-auto space-y-8 px-4">
       {/* Header */}
       <div className="space-y-2 mt-6">
         <h2 className="text-3xl font-bold  text-[#371d54]">
