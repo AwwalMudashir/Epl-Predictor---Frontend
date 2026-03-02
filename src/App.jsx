@@ -23,7 +23,7 @@ function App() {
     <div className="min-h-screen bg-gray-light">
       <Navbar />
       {/* push content down so fixed navbar doesn't overlap */}
-      <main className="mt-16">
+      <main className="mt-14">
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
           <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
