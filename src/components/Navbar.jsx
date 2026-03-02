@@ -11,7 +11,7 @@ function Navbar() {
   const location = useLocation();
 
   // transparent on splash/dashboard so nav blends with page
-  const isBlend = location.pathname === '/' || location.pathname === '/dashboard';
+  const isBlend = location.pathname === '/' || location.pathname === '/dashboard' || location.pathname === '/login' || location.pathname === '/register';
   const navClass = `fixed inset-x-0 top-0 mb-5 p-4 pb-6 text-white flex justify-between items-center z-50 ${
     isBlend ? '' : 'bg-gradient-to-br from-[#371d54] via-[#4b2a6b] to-[#614c77]'
   }`;
