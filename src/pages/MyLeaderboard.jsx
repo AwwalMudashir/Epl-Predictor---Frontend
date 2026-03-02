@@ -5,6 +5,7 @@ import { AuthContext } from '../contexts/AuthContext';
 function MyLeaderboard() {
   const { user } = useContext(AuthContext);
   const [points, setPoints] = useState({});
+  const [myLeagues, setMyLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,8 +13,12 @@ function MyLeaderboard() {
     async function fetch() {
       if (!user || !user.id) return;
       try {
-        const res = await API.get(`/predictions/user/${user.id}/points`);
-        setPoints(res.data || {});
+        const [pRes, lRes] = await Promise.all([
+          API.get(`/predictions/user/${user.id}/points`),
+          API.get(`/league/user/${user.id}/created`)
+        ]);
+        setPoints(pRes.data || {});
+        setMyLeagues(lRes.data || []);
       } catch (err) {
         setError('Unable to load leaderboard');
       } finally {
@@ -42,16 +47,37 @@ function MyLeaderboard() {
   if (entries.length === 0) {
     return (
       <div className="text-center text-gray-400 py-16">
-        No points recorded yet.
+        No points recorded yet.  Make some predictions or create a league to get started.
       </div>
     );
   }
 
   return (
-    <div className="max-w-xl mx-auto space-y-6 px-4">
+    <div className="max-w-xl mt-4 mx-auto space-y-6 px-4">
       <h2 className="text-3xl font-bold text-[#371d54] text-center">
         My Leaderboard
       </h2>
+      <p className="text-center text-gray-600">
+        This page shows your accumulated points by gameweek. Below are your
+        private leagues (if any); click through to see their standings.
+      </p>
+      {myLeagues.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-xl font-semibold text-[#371d54]">
+            My Leagues
+          </h3>
+          <ul className="space-y-2">
+            {myLeagues.map(l => (
+              <li key={l.id} className="flex justify-between items-center bg-white p-3 rounded-lg shadow">
+                <span>{l.name}</span>
+                <a href={`/leagues/${l.id}/standings`} className="text-blue-600 hover:underline">
+                  View standings
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="overflow-hidden rounded-xl shadow-lg border border-gray-200 bg-white">
         <table className="w-full text-sm md:text-base">

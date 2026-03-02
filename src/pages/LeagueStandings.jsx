@@ -5,14 +5,19 @@ import API from '../api';
 function LeagueStandings() {
   const { id } = useParams();
   const [standings, setStandings] = useState([]);
+  const [league, setLeague] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchStandings() {
       try {
-        const res = await API.get(`/league/${id}/standings`);
+        const [res, leagueRes] = await Promise.all([
+          API.get(`/league/${id}/standings`),
+          API.get(`/league/${id}`)
+        ]);
         setStandings(res.data || []);
+        setLeague(leagueRes.data);
       } catch (err) {
         setError('Unable to load standings');
       } finally {
@@ -44,12 +49,25 @@ function LeagueStandings() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 px-4">
+    <div className="max-w-5xl mt-4 mx-auto space-y-6 px-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-[#371d54]">
-          League Standings
-        </h2>
+        <div>
+          <h2 className="text-3xl font-bold text-[#371d54]">
+            League Standings
+          </h2>
+          {league && (
+            <div className="text-sm text-gray-600">
+              Invite code: <span className="font-mono">{league.inviteCode}</span>{' '}
+              <button
+                onClick={() => navigator.clipboard.writeText(league.inviteCode)}
+                className="ml-2 text-blue-600 hover:underline"
+              >
+                copy
+              </button>
+            </div>
+          )}
+        </div>
         <span className="text-sm text-gray-500">
           {standings.length} players
         </span>
